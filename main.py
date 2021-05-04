@@ -132,18 +132,18 @@ class ComparisonFilesPath(object):
                 abs_src_file = os.path.abspath(self.source_dir_pre_fix_path + src_file)
                 assert (os.path.isfile(abs_pre_file))
 
-                ## if the two files are identical
-                abs_src_file_md5 = self.calculate_md5sum(abs_src_file)
-                abs_pre_file_md5 = self.calculate_md5sum(abs_pre_file)
-
-                logging.info("\n")
+                ## if the two files are identical                logging.info("\n")
                 logging.info("---begin to calculate md5sum---")
-                logging.info("This is abs path of a pre file and md5sum.")
+                logging.info("This is an abs path of a file in the previous directory and its md5sum.")
                 logging.debug(abs_pre_file)
+
+                abs_pre_file_md5 = self.calculate_md5sum(abs_pre_file)
                 logging.debug(abs_pre_file_md5)
 
-                logging.info("This is abs path of a src file.")
+                logging.info("This is an abs path of a file in the source directory and its md5sum.")
                 logging.debug(abs_src_file)
+
+                abs_src_file_md5 = self.calculate_md5sum(abs_src_file)
                 logging.debug(abs_src_file_md5)
                 logging.info('---End calculating md5sum---')
                 logging.info("\n")
