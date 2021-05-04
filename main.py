@@ -224,8 +224,9 @@ def test(pre_dir, source_dir):
 
 
     tmp = ComparisonFilesPath(pre_dir_files_path, source_dir_files_path)
-    print(tmp)
-    print(pre_dir_files_path.symlink_dict)
+
+    print(tmp.symlinks_for_dest_dir_list)
+    print(tmp.copy_files_for_dest_dir_list)
 
     # validate_files_path(pre_path)
     # validate_files_path(source_path)
