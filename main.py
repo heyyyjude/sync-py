@@ -133,16 +133,20 @@ class ComparisonFilesPath(object):
                 assert (os.path.isfile(abs_pre_file))
 
                 ## if the two files are identical
-                logging.info('calculate md5sum for an abs_src_file')
                 abs_src_file_md5 = self.calculate_md5sum(abs_src_file)
                 abs_pre_file_md5 = self.calculate_md5sum(abs_pre_file)
-                logging.debug("This is abs path of a pre file and md5sum.")
+
+                logging.info("\n")
+                logging.info("---begin to calculate md5sum---")
+                logging.info("This is abs path of a pre file and md5sum.")
                 logging.debug(abs_pre_file)
                 logging.debug(abs_pre_file_md5)
 
-                logging.debug("This is abs path of a src file.")
+                logging.info("This is abs path of a src file.")
                 logging.debug(abs_src_file)
                 logging.debug(abs_src_file_md5)
+                logging.info('---End calculating md5sum---')
+                logging.info("\n")
 
                 if abs_src_file_md5 == abs_pre_file_md5:
                     symlinks_for_dest_dir_list.append(abs_src_file)
@@ -165,7 +169,6 @@ class ComparisonFilesPath(object):
             while chunk:
                 file_hash.update(chunk)
                 chunk = fin.read(8192)
-        logging.info(file_hash.hexdigest())
         return file_hash.hexdigest()
 
 
