@@ -4,11 +4,11 @@ import os
 import sys
 from collections import OrderedDict
 
-#logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
+# logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-    datefmt='%Y-%m-%d:%H:%M:%S',# this is for turning off the logging
-    level=logging.DEBUG)
+                    datefmt='%Y-%m-%d:%H:%M:%S',  # this is for turning off the logging
+                    level=logging.DEBUG)
 
 logging.getLogger().disabled = False
 
@@ -42,7 +42,7 @@ class PathOfFiles(object):
         abs_path_of_files_list = list()
         for abs_dir, sub_dirs, files in os.walk(self.pre_fix_path):
             for f in files:
-                tmp_path = os.path.join(abs_dir,f)
+                tmp_path = os.path.join(abs_dir, f)
                 abs_file_path = os.path.abspath(tmp_path)
 
                 if os.path.isfile(abs_file_path):
@@ -73,6 +73,14 @@ class ComparisonFilesPath(object):
         self.compare_files()
 
     @property
+    def pre_dir_pre_fix_path(self):
+        return self._pre_path_of_files.pre_fix_path
+
+    @property
+    def source_dir_pre_fix_path(self):
+        return self._source_path_of_files.pre_fix_path
+
+    @property
     def pre_path_of_files(self):
         return self._pre_path_of_files
 
@@ -89,7 +97,8 @@ class ComparisonFilesPath(object):
         return self._copy_files_for_dest_dir_list
 
     def __str__(self):
-        return "symlinks for dest dir : {}\n copy files for dest dir {}".format(self.symlinks_for_dest_dir_list, self.copy_files_for_dest_dir_list)
+        return "symlinks for dest dir : {}\n copy files for dest dir {}".format(self.symlinks_for_dest_dir_list,
+                                                                                self.copy_files_for_dest_dir_list)
 
     # def compare_files(pre_dir, source_dir, pre_file_path_list, source_file_path_list):
     def compare_files(self):
@@ -103,15 +112,16 @@ class ComparisonFilesPath(object):
         symlinks_for_dest_dir_list = list()
         copy_files_for_dest_dir_list = list()
 
-        pre_relative_path_of_files_list = [ i.replace(self.pre_path_of_files.pre_fix_path,"") for i in self.pre_path_of_files.abs_path_of_files_list]
+        pre_relative_path_of_files_list = [i.replace(self.pre_dir_pre_fix_path, "") for i in
+                                           self.pre_path_of_files.abs_path_of_files_list]
         ## a src_file is in source file path list
         # for src_file in source_file_path_list:
         for abs_path_src_file in self.source_path_of_files.abs_path_of_files_list:
-            src_file = abs_path_src_file.replace(self.source_path_of_files.pre_fix_path, "")
+            src_file = abs_path_src_file.replace(self.source_dir_pre_fix_path, "")
             if src_file in pre_relative_path_of_files_list:
 
-                abs_pre_file = os.path.join(self.pre_path_of_files.pre_fix_path, src_file)
-                abs_src_file = os.path.join(self.source_path_of_files.pre_fix_path, src_file)
+                abs_pre_file = os.path.join(self.pre_dir_pre_fix_path, src_file)
+                abs_src_file = os.path.join(self.source_dir_pre_fix_path, src_file)
 
                 logging.info("This is a pre file.")
                 logging.info(abs_pre_file)
@@ -119,7 +129,7 @@ class ComparisonFilesPath(object):
                 logging.info(abs_src_file)
                 ## if the two files are identical
 
-                logging.info('cal md5sum abs_src_file')
+                logging.info('calculate md5sum abs_src_file')
                 logging.info(abs_src_file)
                 abs_src_file_md5 = self.calculate_md5sum(abs_src_file)
                 abs_pre_file_md5 = self.calculate_md5sum(abs_pre_file)
@@ -136,7 +146,6 @@ class ComparisonFilesPath(object):
         self._symlinks_for_dest_dir_list = symlinks_for_dest_dir_list
         self._copy_files_for_dest_dir_list = copy_files_for_dest_dir_list
         return None
-
 
     def calculate_md5sum(self, a_file):
         with open(a_file, 'rb')as fin:
@@ -201,8 +210,8 @@ def test(pre_dir, source_dir):
 
 
 if __name__ == '__main__':
-    #pre_dir = '/Users/Jay.Kim/rsync-test/latest/'
-    #source_dir = '/Users/Jay.Kim/rsync-test/source/'
+    # pre_dir = '/Users/Jay.Kim/rsync-test/latest/'
+    # source_dir = '/Users/Jay.Kim/rsync-test/source/'
 
     pre_dir, source_dir = sys.argv[1], sys.argv[2]
     test(pre_dir, source_dir)
