@@ -47,8 +47,8 @@ class PathOfFiles(object):
 
                 if os.path.isfile(abs_file_path):
 
-                    logging.info('This is an abs_path')
-                    logging.info(abs_file_path)
+                    #logging.info('This is an abs_path')
+                    #logging.info(abs_file_path)
 
                     abs_path_of_files_list.append(abs_file_path)
                 elif os.path.islink(abs_file_path):
@@ -109,24 +109,41 @@ class ComparisonFilesPath(object):
         :param source_file_path_list:
         :return:
         '''
+
+        logging.info("self.pre_dir_pre_fix_path")
+        logging.info(self.pre_dir_pre_fix_path)
+        logging.info("self.source_dir_pre_fix_path")
+        logging.info(self.source_dir_pre_fix_path)
+
+
         symlinks_for_dest_dir_list = list()
         copy_files_for_dest_dir_list = list()
 
         pre_relative_path_of_files_list = [i.replace(self.pre_dir_pre_fix_path, "") for i in
                                            self.pre_path_of_files.abs_path_of_files_list]
+
+        #logging.info(pre_relative_path_of_files_list)
         ## a src_file is in source file path list
-        # for src_file in source_file_path_list:
         for abs_path_src_file in self.source_path_of_files.abs_path_of_files_list:
+            #logging.info("abs_path_src_file")
+            #logging.info(abs_path_src_file)
+
             src_file = abs_path_src_file.replace(self.source_dir_pre_fix_path, "")
             if src_file in pre_relative_path_of_files_list:
 
-                abs_pre_file = os.path.join(self.pre_dir_pre_fix_path, src_file)
-                abs_src_file = os.path.join(self.source_dir_pre_fix_path, src_file)
 
-                logging.info("This is a pre file.")
-                logging.info(abs_pre_file)
-                logging.info("This is a src file.")
-                logging.info(abs_src_file)
+                logging.info(self.pre_dir_pre_fix_path + src_file)
+
+                abs_pre_file = os.path.abspath(self.pre_dir_pre_fix_path + src_file)
+                assert(os.path.isfile(abs_pre_file))
+
+                abs_src_file = os.path.abspath(self.source_dir_pre_fix_path + src_file)
+                assert(os.path.isfile(abs_pre_file))
+
+                logging.debug("This is abs path of a pre file.")
+                logging.debug(abs_pre_file)
+                logging.debug("This is abs path of a src file.")
+                logging.debug(abs_src_file)
                 ## if the two files are identical
 
                 logging.info('calculate md5sum for an abs_src_file')
