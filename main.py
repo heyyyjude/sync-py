@@ -129,7 +129,7 @@ class ComparisonFilesPath(object):
                 logging.info(abs_src_file)
                 ## if the two files are identical
 
-                logging.info('calculate md5sum abs_src_file')
+                logging.info('calculate md5sum for an abs_src_file')
                 logging.info(abs_src_file)
                 abs_src_file_md5 = self.calculate_md5sum(abs_src_file)
                 abs_pre_file_md5 = self.calculate_md5sum(abs_pre_file)
@@ -197,8 +197,14 @@ def main():
 
 def test(pre_dir, source_dir):
     pre_dir_files_path = PathOfFiles(pre_dir)
+    logging.info("pre_dir_pre_fix_path")
+    logging.info(pre_dir_files_path.pre_fix_path)
+
 
     source_dir_files_path = PathOfFiles(source_dir)
+    logging.info("source_dir_pre_fix_path")
+    logging.info(source_dir_files_path.pre_fix_path)
+
 
     tmp = ComparisonFilesPath(pre_dir_files_path, source_dir_files_path)
     print(tmp)
