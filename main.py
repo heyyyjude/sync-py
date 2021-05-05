@@ -1,17 +1,14 @@
-import hashlib
 import logging
 import os
-import sys
-from collections import OrderedDict
 from comparison_path_files import ComparisonPathOfFiles
 from path_of_files import PathOfFiles
-
-# logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
+from copy_files_and_hard_links import CopyFilesHardlinks
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                    datefmt='%Y-%m-%d:%H:%M:%S',  # this is for turning off the logging
+                    datefmt='%Y-%m-%d:%H:%M:%S',
                     level=logging.DEBUG)
 
+# this is for turning off the logging
 logging.getLogger().disabled = False
 
 
@@ -54,21 +51,23 @@ def main():
 
 def test(pre_dir, source_dir):
     pre_dir_files_path = PathOfFiles(pre_dir)
-    logging.info("pre_dir_pre_fix_path")
-    logging.info(pre_dir_files_path.pre_fix_path)
+    # logging.info("pre_dir_pre_fix_path")
+    # logging.info(pre_dir_files_path.pre_fix_path)
 
     source_dir_files_path = PathOfFiles(source_dir)
-    logging.info("source_dir_pre_fix_path")
-    logging.info(source_dir_files_path.pre_fix_path)
+    # logging.info("source_dir_pre_fix_path")
+    # logging.info(source_dir_files_path.pre_fix_path)
 
     tmp = ComparisonPathOfFiles(pre_dir_files_path, source_dir_files_path)
 
-    print(tmp.symlinks_for_dest_dir_list)
-    print(tmp.copy_files_for_dest_dir_list)
+    print("hardlinks - unchanged")
+    print(tmp.hardlinks_path_from_previous_dir_list)
 
-    # validate_files_path(pre_path)
-    # validate_files_path(source_path)
-    pass
+    print("copy files - changed")
+    print(tmp.copy_files_path_from_source_dir_list)
+    dest_dir = '/Users/Jay.Kim/rsync-test/dest_dir'
+    Copy = CopyFilesHardlinks(tmp, dest_dir)
+
 
 
 if __name__ == '__main__':

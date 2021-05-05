@@ -4,9 +4,10 @@ import logging
 
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                    datefmt='%Y-%m-%d:%H:%M:%S',  # this is for turning off the logging
+                    datefmt='%Y-%m-%d:%H:%M:%S',
                     level=logging.DEBUG)
 
+# this is for turning off the logging
 logging.getLogger().disabled = False
 
 
@@ -16,8 +17,10 @@ class ComparisonPathOfFiles(object):
         self._pre_path_of_files = PrePathOfFiles
         # path of files in the source directory
         self._source_path_of_files = sourcePathOfFiles
-        self._symlinks_for_dest_dir_list = None
-        self._copy_files_for_dest_dir_list = None
+        # abs path used
+        self._hardlinks_path_from_previous_dir_list = None
+        # abs path used
+        self._copy_files_path_from_source_dir_list = None
         self.compare_files()
 
     @property
@@ -37,16 +40,16 @@ class ComparisonPathOfFiles(object):
         return self._source_path_of_files
 
     @property
-    def symlinks_for_dest_dir_list(self):
-        return self._symlinks_for_dest_dir_list
+    def hardlinks_path_from_previous_dir_list(self):
+        return self._hardlinks_path_from_previous_dir_list
 
     @property
-    def copy_files_for_dest_dir_list(self):
-        return self._copy_files_for_dest_dir_list
+    def copy_files_path_from_source_dir_list(self):
+        return self._copy_files_path_from_source_dir_list
 
     def __str__(self):
-        return "symlinks for dest dir : {}\n copy files for dest dir {}".format(self.symlinks_for_dest_dir_list,
-                                                                                self.copy_files_for_dest_dir_list)
+        return "hard-links for dest dir : {}\n copy files for dest dir {}".format(self.hardlinks_path_from_previous_dir_list,
+                                                                                  self.copy_files_path_from_source_dir_list)
 
     # def compare_files(pre_dir, source_dir, pre_file_path_list, source_file_path_list):
     def compare_files(self):
@@ -63,8 +66,8 @@ class ComparisonPathOfFiles(object):
         logging.info("self.source_dir_pre_fix_path")
         logging.info(self.source_dir_pre_fix_path)
 
-        symlinks_for_dest_dir_list = list()
-        copy_files_for_dest_dir_list = list()
+        hardlinks_path_from_previous_dir_list = list()
+        copy_files_path_from_source_dir_list = list()
 
         pre_relative_path_of_files_list = [i.replace(self.pre_dir_pre_fix_path, "") for i in
                                            self.pre_path_of_files.abs_path_of_files_list]
@@ -97,17 +100,17 @@ class ComparisonPathOfFiles(object):
                 logging.info("\n")
 
                 if abs_src_file_md5 == abs_pre_file_md5:
-                    symlinks_for_dest_dir_list.append(abs_src_file)
-                ## if they are not identical
+                    hardlinks_path_from_previous_dir_list.append(abs_pre_file)
+                ## if files are not identical
                 else:
-                    copy_files_for_dest_dir_list.append(abs_src_file)
-            ## if the file in source directory is not found in the previous directory
+                    copy_files_path_from_source_dir_list.append(abs_src_file)
+            ## if a file in source directory is not found in the previous directory
             else:
                 ## abs_src_file = os.path.join(source_dir, src_file)
-                copy_files_for_dest_dir_list.append(abs_path_src_file)
+                copy_files_path_from_source_dir_list.append(abs_path_src_file)
 
-        self._symlinks_for_dest_dir_list = symlinks_for_dest_dir_list
-        self._copy_files_for_dest_dir_list = copy_files_for_dest_dir_list
+        self._hardlinks_path_from_previous_dir_list = hardlinks_path_from_previous_dir_list
+        self._copy_files_path_from_source_dir_list = copy_files_path_from_source_dir_list
         return None
 
     def calculate_md5sum(self, a_file):
