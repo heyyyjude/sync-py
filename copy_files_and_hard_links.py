@@ -73,9 +73,6 @@ class CopyFilesHardlinks(object):
             shutil.copy2(source_dir_files, abs_path_dest_file)
 
     def create_symlinks(self):
-
-        #pass
-        #dest_prefix_dir =
         for abs_src_symlinks in self._symlinks_dict_from_source_dir:
 
             # This is a relative symlinks (file) path
@@ -83,6 +80,8 @@ class CopyFilesHardlinks(object):
 
             change_dir = self.prefix_dest_dir_path + "/" + os.path.dirname(src_symlinks)
             logging.info(change_dir)
+
+            os.makedirs(change_dir, exist_ok=True)
             os.chdir(change_dir)
 
             # Key is a relative path of the original file
