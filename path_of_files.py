@@ -4,15 +4,14 @@ from collections import OrderedDict
 
 class PathOfFiles(object):
     def __init__(self, pre_fix_path):
-        self._pre_fix_path = os.path.abspath(pre_fix_path)
+        self._prefix_path = os.path.abspath(pre_fix_path) + "/"
         self._abs_path_of_files_list = None
         self._symlink_dict = OrderedDict()
         self.get_path_of_files()
-        # key - abs path of symlink : value - abs path of origin file
 
     @property
-    def pre_fix_path(self):
-        return self._pre_fix_path
+    def prefix_path(self):
+        return self._prefix_path
 
     @property
     def symlink_dict(self):
@@ -27,9 +26,9 @@ class PathOfFiles(object):
         get the absolute path of files from the previous directory or the source directory
         :set: set symlink_dict, abs_path_of_files_list
         '''
-        os.chdir(self.pre_fix_path)
+        os.chdir(self.prefix_path)
         abs_path_of_files_list = list()
-        for abs_dir, sub_dirs, files in os.walk(self.pre_fix_path):
+        for abs_dir, sub_dirs, files in os.walk(self.prefix_path):
             for f in files:
                 tmp_path = os.path.join(abs_dir, f)
                 abs_file_path = os.path.abspath(tmp_path)
@@ -43,7 +42,6 @@ class PathOfFiles(object):
                     abs_path_of_files_list.append(abs_file_path)
 
                 else:
-                    print(self.pre_fix_path, f)
+                    print(self.prefix_path, f)
                     raise ValueError("This is not a file nor a link")
         self._abs_path_of_files_list = abs_path_of_files_list
-        return None

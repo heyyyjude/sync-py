@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 import sys
@@ -39,23 +40,26 @@ def validate_files_path(a_file):
     return symlink_path_of_file, symlink_origin_path_of_file
 
 
-def main():
-    pass
+def main(backup_dir, source_dir, dest_dir):
+    backup_dir_files_path = PathOfFiles(backup_dir)
+    source_dir_files_path = PathOfFiles(source_dir)
+    comparison = ComparisonPathOfFiles(backup_dir_files_path, source_dir_files_path)
+    start = CopyFilesHardlinks(comparison, dest_dir)
+    start.run()
 
 
 def test(pre_dir, source_dir, dest_dir):
     pre_dir_files_path = PathOfFiles(pre_dir)
     print(pre_dir_files_path.symlink_dict)
 
-    logging.info("pre_dir_pre_fix_path")
-    logging.info(pre_dir_files_path.pre_fix_path)
+    logging.info("backup-dir-prefix_path")
+    logging.info(pre_dir_files_path.prefix_path)
 
     source_dir_files_path = PathOfFiles(source_dir)
-    logging.info("source_dir_pre_fix_path")
-    logging.info(source_dir_files_path.pre_fix_path)
+    logging.info("source-dir-prefix-path")
+    logging.info(source_dir_files_path.prefix_path)
 
     tmp = ComparisonPathOfFiles(pre_dir_files_path, source_dir_files_path)
-
 
     print("hardlinks - unchanged")
     print(tmp.hardlinks_path_from_previous_dir_list)
@@ -69,13 +73,39 @@ def test(pre_dir, source_dir, dest_dir):
     logging.debug(start.hard_links_list)
 
 
-
 if __name__ == '__main__':
-    backup_dir = '/Users/Jay.Kim/rsync-test/latest/'
-    source_dir = '/Users/Jay.Kim/rsync-test/source/'
-    dest_dir = '/Users/Jay.Kim/rsync-test/dest_dir/'
+    # backup_dir = '/Users/Jay.Kim/rsync-test/latest/'
+    # source_dir = '/Users/Jay.Kim/rsync-test/source/'
+    # dest_dir = '/Users/Jay.Kim/rsync-test/dest_dir/'
 
+    # backup_dir, source_dir, dest_dir = sys.argv[1], sys.argv[2], sys.argv[3]
+    # test(backup_dir, source_dir, dest_dir)
 
-    #backup_dir, source_dir, dest_dir = sys.argv[1], sys.argv[2], sys.argv[3]
-    test(backup_dir, source_dir, dest_dir)
-    ##main()
+    parser = argparse.ArgumentParser(description="Python scripts for doing the rsync link-dest job")
+
+    parser.add_argument('-b',
+                        '--backup_dir',
+                        action='store',
+                        type=str,
+                        required=True,
+                        help="backup-dir",
+                        )
+
+    parser.add_argument('-s',
+                        '--source_dir',
+                        action='store',
+                        type=str,
+                        required=True,
+                        help='source-dir',
+                        )
+    parser.add_argument('-d',
+                        '--dest_dir',
+                        action='store',
+                        type=str,
+                        required=True,
+                        help='dest-dir',
+                        )
+
+    args = parser.parse_args()
+
+    main(args.backup_dir, args.source_dir, args.dest_dir)
