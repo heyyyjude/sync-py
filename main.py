@@ -45,29 +45,37 @@ def main():
 
 def test(pre_dir, source_dir, dest_dir):
     pre_dir_files_path = PathOfFiles(pre_dir)
-    # logging.info("pre_dir_pre_fix_path")
-    # logging.info(pre_dir_files_path.pre_fix_path)
+    print(pre_dir_files_path.symlink_dict)
+
+    logging.info("pre_dir_pre_fix_path")
+    logging.info(pre_dir_files_path.pre_fix_path)
 
     source_dir_files_path = PathOfFiles(source_dir)
-    # logging.info("source_dir_pre_fix_path")
-    # logging.info(source_dir_files_path.pre_fix_path)
+    logging.info("source_dir_pre_fix_path")
+    logging.info(source_dir_files_path.pre_fix_path)
 
     tmp = ComparisonPathOfFiles(pre_dir_files_path, source_dir_files_path)
+
 
     print("hardlinks - unchanged")
     print(tmp.hardlinks_path_from_previous_dir_list)
 
     print("copy files - changed")
     print(tmp.copy_files_path_from_source_dir_list)
-    Copy = CopyFilesHardlinks(tmp, dest_dir)
+    start = CopyFilesHardlinks(tmp, dest_dir)
+    start.run()
+
+    logging.info("hard links backup to dest")
+    logging.debug(start.hard_links_list)
 
 
 
 if __name__ == '__main__':
-#    pre_dir = '/Users/Jay.Kim/rsync-test/latest/'
-#    source_dir = '/Users/Jay.Kim/rsync-test/source/'
-#    dest_dir = '/Users/Jay.Kim/rsync-test/dest_dir'
+    backup_dir = '/Users/Jay.Kim/rsync-test/latest/'
+    source_dir = '/Users/Jay.Kim/rsync-test/source/'
+    dest_dir = '/Users/Jay.Kim/rsync-test/dest_dir/'
 
-    pre_dir, source_dir, dest = sys.argv[1], sys.argv[2], sys.argv[3]
-    test(pre_dir, source_dir, dest)
+
+    #backup_dir, source_dir, dest_dir = sys.argv[1], sys.argv[2], sys.argv[3]
+    test(backup_dir, source_dir, dest_dir)
     ##main()

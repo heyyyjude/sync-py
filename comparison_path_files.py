@@ -2,6 +2,7 @@ import os
 import hashlib
 import logging
 
+from collections import OrderedDict
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
                     datefmt='%Y-%m-%d:%H:%M:%S',
@@ -12,28 +13,44 @@ logging.getLogger().disabled = False
 
 
 class ComparisonPathOfFiles(object):
-    def __init__(self, PrePathOfFiles, sourcePathOfFiles):
+    def __init__(self, BackupPathOfFiles, sourcePathOfFiles):
         # path of files in the previous directory
-        self._pre_path_of_files = PrePathOfFiles
+        self._backup_path_of_files = BackupPathOfFiles
         # path of files in the source directory
         self._source_path_of_files = sourcePathOfFiles
         # abs path used
         self._hardlinks_path_from_previous_dir_list = None
         # abs path used
         self._copy_files_path_from_source_dir_list = None
+
+        # symlinks dict from backup_dir
+        self._symlinks_dict_from_backup_dir = BackupPathOfFiles.symlink_dict
+        # symlinks dict from source_dir
+        self._symlinks_dict_from_source_dir = sourcePathOfFiles.symlink_dict
+
+        self._symlinks_verified_from_source_dir = OrderedDict()
+
         self.compare_files()
 
     @property
+    def symlinks_dict_from_backup_dir(self):
+        return self._symlinks_dict_from_backup_dir
+
+    @property
+    def symlinks_dict_from_source_dir(self):
+        return self._symlinks_dict_from_source_dir
+
+    @property
     def pre_dir_pre_fix_path(self):
-        return self._pre_path_of_files.pre_fix_path
+        return self._backup_path_of_files.pre_fix_path
 
     @property
     def source_dir_pre_fix_path(self):
         return self._source_path_of_files.pre_fix_path
 
     @property
-    def pre_path_of_files(self):
-        return self._pre_path_of_files
+    def backup_path_of_files(self):
+        return self._backup_path_of_files
 
     @property
     def source_path_of_files(self):
@@ -48,42 +65,36 @@ class ComparisonPathOfFiles(object):
         return self._copy_files_path_from_source_dir_list
 
     def __str__(self):
-        return "hard-links for dest dir : {}\n copy files for dest dir {}".format(self.hardlinks_path_from_previous_dir_list,
-                                                                                  self.copy_files_path_from_source_dir_list)
+        return "hard-links for dest dir : {}\n copy files for dest dir {}".format(
+            self.hardlinks_path_from_previous_dir_list,
+            self.copy_files_path_from_source_dir_list)
 
-    # def compare_files(pre_dir, source_dir, pre_file_path_list, source_file_path_list):
     def compare_files(self):
 
         '''
-
+        This function is for only files to compare. Not symlinks.
         :param pre_file_path_list:
         :param source_file_path_list:
         :return:
         '''
-
-        logging.info("self.pre_dir_pre_fix_path")
-        logging.info(self.pre_dir_pre_fix_path)
-        logging.info("self.source_dir_pre_fix_path")
-        logging.info(self.source_dir_pre_fix_path)
-
         hardlinks_path_from_previous_dir_list = list()
         copy_files_path_from_source_dir_list = list()
 
-        pre_relative_path_of_files_list = [i.replace(self.pre_dir_pre_fix_path, "") for i in
-                                           self.pre_path_of_files.abs_path_of_files_list]
+        pre_relative_path_of_files_list = [i.replace(self.pre_dir_pre_fix_path + '/', "") for i in
+                                           self.backup_path_of_files.abs_path_of_files_list]
 
         for abs_path_src_file in self.source_path_of_files.abs_path_of_files_list:
+            logging.info(abs_path_src_file)
 
-            src_file = abs_path_src_file.replace(self.source_dir_pre_fix_path, "")
+            src_file = abs_path_src_file.replace(self.source_dir_pre_fix_path + "/", "")
             if src_file in pre_relative_path_of_files_list:
 
-                abs_pre_file = os.path.abspath(self.pre_dir_pre_fix_path + src_file)
+                abs_pre_file = os.path.abspath(self.pre_dir_pre_fix_path + "/" + src_file)
                 assert (os.path.isfile(abs_pre_file))
 
-                abs_src_file = os.path.abspath(self.source_dir_pre_fix_path + src_file)
+                abs_src_file = os.path.abspath(self.source_dir_pre_fix_path + "/" + src_file)
                 assert (os.path.isfile(abs_pre_file))
 
-                ## if the two files are identical                logging.info("\n")
                 logging.info("---begin to calculate md5sum---")
                 logging.info("This is an abs path of a file in the previous directory and its md5sum.")
                 logging.debug(abs_pre_file)
@@ -121,3 +132,22 @@ class ComparisonPathOfFiles(object):
                 file_hash.update(chunk)
                 chunk = fin.read(8192)
         return file_hash.hexdigest()
+
+    def compare_symlinks(self):
+
+        ## calling for only a key which is abs_symlinks
+        relative_path_backup_files = [i.replace(self.pre_dir_pre_fix_path) for i in
+                                      self.symlinks_dict_from_backup_dir.keys()]
+        for abs_source_symlinks_file in self.symlinks_dict_from_source_dir:
+
+            ## creating relative symlinks string
+            src_symlinks_file = abs_source_symlinks_file.replace(self.source_dir_pre_fix_path + "/", "")
+
+            ## if relative src symlinks in symlinks in the backup directory
+            ## Then, keep the symlinks in a dictionary
+            if src_symlinks_file in relative_path_backup_files:
+                self._symlinks_verified_from_source_dir[abs_source_symlinks_file] = self.symlinks_dict_from_source_dir[
+                    abs_source_symlinks_file]
+
+            else:
+                pass
