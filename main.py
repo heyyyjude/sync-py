@@ -1,5 +1,7 @@
 import logging
 import os
+import sys
+
 from comparison_path_files import ComparisonPathOfFiles
 from path_of_files import PathOfFiles
 from copy_files_and_hard_links import CopyFilesHardlinks
@@ -37,19 +39,11 @@ def validate_files_path(a_file):
     return symlink_path_of_file, symlink_origin_path_of_file
 
 
-def create_symlinks(pre_file, dest_file):
-    pass
-
-
-def copy_file(source_file, dest_file):
-    pass
-
-
 def main():
     pass
 
 
-def test(pre_dir, source_dir):
+def test(pre_dir, source_dir, dest_dir):
     pre_dir_files_path = PathOfFiles(pre_dir)
     # logging.info("pre_dir_pre_fix_path")
     # logging.info(pre_dir_files_path.pre_fix_path)
@@ -65,15 +59,15 @@ def test(pre_dir, source_dir):
 
     print("copy files - changed")
     print(tmp.copy_files_path_from_source_dir_list)
-    dest_dir = '/Users/Jay.Kim/rsync-test/dest_dir'
     Copy = CopyFilesHardlinks(tmp, dest_dir)
 
 
 
 if __name__ == '__main__':
-    pre_dir = '/Users/Jay.Kim/rsync-test/latest/'
-    source_dir = '/Users/Jay.Kim/rsync-test/source/'
+#    pre_dir = '/Users/Jay.Kim/rsync-test/latest/'
+#    source_dir = '/Users/Jay.Kim/rsync-test/source/'
+#    dest_dir = '/Users/Jay.Kim/rsync-test/dest_dir'
 
-    # pre_dir, source_dir = sys.argv[1], sys.argv[2]
-    test(pre_dir, source_dir)
+    pre_dir, source_dir, dest = sys.argv[1], sys.argv[2], sys.argv[3]
+    test(pre_dir, source_dir, dest)
     ##main()
