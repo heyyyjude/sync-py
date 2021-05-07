@@ -30,7 +30,7 @@ class PathOfFiles(object):
         abs_path_of_files_list = list()
         for abs_dir, sub_dirs, files in os.walk(self.prefix_path):
 
-            if ".git" in abs_dir or ".snakemake" in abs_dir:
+            if ".git" in abs_dir in abs_dir: #or ".snakemake" in abs_dir:
                 pass
             else:
                 for f in files:
