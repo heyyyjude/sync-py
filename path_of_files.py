@@ -45,3 +45,14 @@ class PathOfFiles(object):
                     print(self.prefix_path, f)
                     raise ValueError("This is not a file nor a link")
         self._abs_path_of_files_list = abs_path_of_files_list
+
+    def validate_files_path(self):
+        '''
+        validate files in lists
+        :return: None or Error raised.
+        '''
+
+        if not os.path.isdir(self.prefix_path):
+            print("This is a directory!")
+            print(self.prefix_path)
+            raise ValueError()

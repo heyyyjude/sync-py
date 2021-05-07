@@ -1,11 +1,9 @@
 import argparse
 import logging
-import os
-import sys
 
 from comparison_path_files import ComparisonPathOfFiles
-from path_of_files import PathOfFiles
 from copy_files_and_hard_links import CopyFilesHardlinks
+from path_of_files import PathOfFiles
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
                     datefmt='%Y-%m-%d:%H:%M:%S',
@@ -13,31 +11,6 @@ logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:
 
 # this is for turning off the logging
 logging.getLogger().disabled = False
-
-
-def validate_files_path(a_file):
-    '''
-    validate files in lists
-    :param file_path_list:
-    :return: None or Error raised.
-    '''
-
-    ## key - abs path of symlink : value - abs path of origin file
-    symlink_path_of_file = None
-    symlink_origin_path_of_file = None
-    if os.path.isfile(a_file):
-        pass
-    elif os.path.islink(a_file):
-        os.readlink(a_file)
-
-        symlink_path_of_file = os.path.abspath(a_file)
-        symlink_origin_path_of_file = os.path.abspath(os.readlink(a_file))
-    else:
-        print("Error")
-        print(a_file)
-        raise ValueError('This is not a file nor a link')
-    logging.info('Validation is done')
-    return symlink_path_of_file, symlink_origin_path_of_file
 
 
 def main(backup_dir, source_dir, dest_dir):

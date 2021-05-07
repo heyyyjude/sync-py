@@ -17,7 +17,7 @@ class CopyFilesHardlinks(object):
         # abs path of files in the previous directory in list
         self._hard_links_list = ComparisonPathFiles.hardlinks_path_from_previous_dir_list
         self._copy_files_path_from_source_dir_list = ComparisonPathFiles.copy_files_path_from_source_dir_list
-        self._prefix_dest_dir_path = path_of_dest_dir
+        self._prefix_dest_dir_path = path_of_dest_dir + "/"
         self._symlinks_dict_from_source_dir = ComparisonPathFiles.symlinks_dict_from_source_dir
 
     def run(self):

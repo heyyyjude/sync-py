@@ -72,8 +72,6 @@ class ComparisonPathOfFiles(object):
 
         '''
         This function is for only files to compare. Not symlinks.
-        :param pre_file_path_list:
-        :param source_file_path_list:
         :return:
         '''
         hardlinks_path_from_previous_dir_list = list()
