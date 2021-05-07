@@ -29,21 +29,25 @@ class PathOfFiles(object):
         os.chdir(self.prefix_path)
         abs_path_of_files_list = list()
         for abs_dir, sub_dirs, files in os.walk(self.prefix_path):
-            for f in files:
-                tmp_path = os.path.join(abs_dir, f)
-                abs_file_path = os.path.abspath(tmp_path)
 
-                if os.path.islink(abs_file_path):
-                    symlink_path_of_file = os.path.abspath(abs_file_path)
-                    symlink_origin_path_of_file = os.readlink(abs_file_path)
-                    self._symlink_dict[symlink_path_of_file] = symlink_origin_path_of_file
+            if ".git" in abs_dir or ".snakemake" in abs_dir:
+                pass
+            else:
+                for f in files:
+                    tmp_path = os.path.join(abs_dir, f)
+                    abs_file_path = os.path.abspath(tmp_path)
 
-                elif os.path.isfile(abs_file_path):
-                    abs_path_of_files_list.append(abs_file_path)
+                    if os.path.islink(abs_file_path):
+                        symlink_path_of_file = os.path.abspath(abs_file_path)
+                        symlink_origin_path_of_file = os.readlink(abs_file_path)
+                        self._symlink_dict[symlink_path_of_file] = symlink_origin_path_of_file
 
-                else:
-                    print(self.prefix_path, f)
-                    raise ValueError("This is not a file nor a link")
+                    elif os.path.isfile(abs_file_path):
+                        abs_path_of_files_list.append(abs_file_path)
+
+                    else:
+                        print(self.prefix_path, f)
+                        raise ValueError("This is not a file nor a link")
         self._abs_path_of_files_list = abs_path_of_files_list
 
     def validate_files_path(self):
