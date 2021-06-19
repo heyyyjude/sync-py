@@ -1,7 +1,6 @@
 # sync-py
 
-These are python scripts for doing what the ```rsync link-dest``` does, aside from creating symlinks instead of creating hard links to symbolic links.
-Rsync doesn't create hard links to symlinks, so these scripts are used to handle this issue. The output is the same.  
+These are python scripts for doing what the ```rsync link-dest``` does, but the difference is that the scripts copy the symlinks instead of creating hard links to the symlinks. Creating hard links to symlinks causes an error. This is a log file ```logs/python_script.log``` from the python scripts.
 
 ## How they work
 
