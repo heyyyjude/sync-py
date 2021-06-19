@@ -5,7 +5,7 @@ Rsync doesn't create hard links to symlinks, so these scripts are used to handle
 
 ## How they work
 
-```python3 main.py "backup dir"  "source dir"  "destination dir"```
+```python3 main.py -b "backup dir"  -s "source dir"  -d "destination dir"```
 
 1. Compare files in the source directory to files in the backup directory  
 2. Create hard links (in the destination directory) unchanged files to backup     
@@ -15,5 +15,5 @@ Rsync doesn't create hard links to symlinks, so these scripts are used to handle
 ## To Do list
 
 * [ ] Create a dry run function if possible
-* [ ] Refactoring for a name of variables and functions
+* [ ] Refactor for a name of variables and functions
 * [ ] Integrate these files into a snakemake pipeline 
